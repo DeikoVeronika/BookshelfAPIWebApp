@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BookshelfAPIWebApp.Models;
 
 namespace BookshelfAPIWebApp.Controllers
 {
-    public class BookAuthorsController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class BookAuthorsController : ControllerBase
     {
         private readonly BookshelfAPIContext _context;
 
@@ -18,147 +20,83 @@ namespace BookshelfAPIWebApp.Controllers
             _context = context;
         }
 
-        // GET: BookAuthors
-        public async Task<IActionResult> Index()
+        // GET: api/BookAuthors
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BookAuthor>>> GetBookAuthors()
         {
-            var bookshelfAPIContext = _context.BookAuthors.Include(b => b.Author).Include(b => b.Book);
-            return View(await bookshelfAPIContext.ToListAsync());
+            return await _context.BookAuthors.ToListAsync();
         }
 
-        // GET: BookAuthors/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/BookAuthors/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<BookAuthor>> GetBookAuthor(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var bookAuthor = await _context.BookAuthors
-                .Include(b => b.Author)
-                .Include(b => b.Book)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (bookAuthor == null)
-            {
-                return NotFound();
-            }
-
-            return View(bookAuthor);
-        }
-
-        // GET: BookAuthors/Create
-        public IActionResult Create()
-        {
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name");
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Id");
-            return View();
-        }
-
-        // POST: BookAuthors/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,BookId,AuthorId")] BookAuthor bookAuthor)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(bookAuthor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", bookAuthor.AuthorId);
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Id", bookAuthor.BookId);
-            return View(bookAuthor);
-        }
-
-        // GET: BookAuthors/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var bookAuthor = await _context.BookAuthors.FindAsync(id);
+
             if (bookAuthor == null)
             {
                 return NotFound();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", bookAuthor.AuthorId);
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Id", bookAuthor.BookId);
-            return View(bookAuthor);
+
+            return bookAuthor;
         }
 
-        // POST: BookAuthors/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,BookId,AuthorId")] BookAuthor bookAuthor)
+        // PUT: api/BookAuthors/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutBookAuthor(int id, BookAuthor bookAuthor)
         {
             if (id != bookAuthor.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(bookAuthor).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(bookAuthor);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookAuthorExists(bookAuthor.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "Name", bookAuthor.AuthorId);
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Id", bookAuthor.BookId);
-            return View(bookAuthor);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!BookAuthorExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: BookAuthors/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/BookAuthors
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<BookAuthor>> PostBookAuthor(BookAuthor bookAuthor)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            _context.BookAuthors.Add(bookAuthor);
+            await _context.SaveChangesAsync();
 
-            var bookAuthor = await _context.BookAuthors
-                .Include(b => b.Author)
-                .Include(b => b.Book)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            return CreatedAtAction("GetBookAuthor", new { id = bookAuthor.Id }, bookAuthor);
+        }
+
+        // DELETE: api/BookAuthors/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteBookAuthor(int id)
+        {
+            var bookAuthor = await _context.BookAuthors.FindAsync(id);
             if (bookAuthor == null)
             {
                 return NotFound();
             }
 
-            return View(bookAuthor);
-        }
-
-        // POST: BookAuthors/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var bookAuthor = await _context.BookAuthors.FindAsync(id);
-            if (bookAuthor != null)
-            {
-                _context.BookAuthors.Remove(bookAuthor);
-            }
-
+            _context.BookAuthors.Remove(bookAuthor);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool BookAuthorExists(int id)

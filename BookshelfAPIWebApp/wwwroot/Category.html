@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Категорії</title>
+    <link rel="stylesheet" href="css/site.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,200,0,0" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,200,1,0" />
+</head>
+<body>
+    <!-- start header -->
+    <header>
+        <!-- start nav -->
+        <nav class="nav">
+            <div class="nav-items">
+                <div class="logo">
+                    <a class="logo-link" href="/Index.html">logo</a>
+                </div>
+                <ul class="navbar-items">
+                    <li class="nav-item">
+                        <a class="nav-link-active" href="/Category.html">Категорії</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Author.html">Автори</a>
+                    </li>
+                    <li class="nav-item-favorite">
+                        <a class="nav-link-favorite" href="#">
+                            <span class="material-symbols-outlined">favorite</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="content-container">
+        <div class="create-category-container">
+            <button class="btn create-page-btn" id="show-create-category-form"><span>Створити нову категорію</span></button>
+            <div class="create-category-form" style="display: none;">
+                <form class="create-form-category" action="javascript:void(0);" method="POST" onsubmit="addCategory()">
+                    <h2 class="create-title">Створення категорії</h2>
+                    <div class="input-items">
+                        <input class="input-item" type="text" id="add-name" placeholder="Назва категорії">
+                        <input class="input-item" type="text" id="add-description" placeholder="Опис категорії"> <!-- Оновлений ідентифікатор поля опису категорії -->
+                    </div>
+                    <button class="btn create-btn"><span>Створити категорію</span></button>
+                </form>
+            </div>
+        </div>
+
+        <p id="counter"></p>
+        <table class="table">
+            <tr>
+                <th class="table-name">Назва</th>
+                <th class="table-name">Опис</th>
+            </tr>
+            <tbody id="categories"></tbody>
+        </table>
+        <div class="edit-category-container" id="editCategory" style="display: none;">
+            <form class="edit-form-category" action="javascript:void(0);" onsubmit="updateCategory()">
+                <div class="title-close-block">
+                    <a class="close-btn" onclick="closeInput()" aria-label="Close">&#10006;</a>
+                    <h2>Редагування категорії</h2>
+                </div>
+                <div class="input-items">
+                    <input class="input-item" type="hidden" id="edit-id">
+                    <input class="input-item" type="text" id="edit-name">
+                    <input class="input-item" type="text" id="edit-desctiption">
+                </div>
+                <button class="btn save-btn"><span>Зберегти зміни</span></button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <script src="js/category.js" asp-append-version="true"></script>
+    <script type="text/javascript">
+        getCategories();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/site.js"></script>
+
+
+</body>
+</html>
