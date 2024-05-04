@@ -201,8 +201,10 @@ header {
     margin: 60px;
 }
 
+.content-container-category, .content-container-author {
+    margin-top: 60px;
+}
 /*end content*/
-
 /*start content main page*/
 .content-container-main-page {
     display: flex;
@@ -233,8 +235,12 @@ header {
     display: flex;
     gap: 30px;
 }
-/*start create form*/
-.create-form-category, .edit-form-category {
+/*start create and edit form*/
+.create-form-category, 
+.edit-form-category, 
+.create-form-author, 
+.edit-form-author {
+
     text-align: center;
     margin-top: 15px;
     padding: 0 50px 30px 50px;
@@ -245,7 +251,7 @@ header {
 
 
 
-/*end create form*/
+/*end create and edit form*/
 
 /*start table*/
 .table {
@@ -281,15 +287,36 @@ tr {
     cursor: pointer;
 }
 
-    tr:hover td {
-        color: #6699ff;
-    }
+tr:hover td {
+    color: #6699ff;
+}
+
+.author-table {
+    width: 100%;
+}
+
+
+
+.author-table th:nth-child(1),
+.author-table td:nth-child(1) {
+    width: 20%; 
+}
+
+.author-table th:nth-child(2),
+.author-table td:nth-child(2) {
+    width: 60%; 
+}
+
+.author-table th:nth-child(3),
+.author-table td:nth-child(3) {
+    width: 20%;
+}
 
 /*end table*/
 .create-form-author {
     float: left;
     display: grid;
-    grid-template-columns: 1fr; 
+    grid-template-columns: 1fr;
     grid-gap: 10px;
 }
 

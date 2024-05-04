@@ -43,6 +43,97 @@
                 <img class="bg-girl-img" src="img/bg-img-girl.png" />
             </div>
         </div>
+
+        <div class="content-container-category">
+            <div class="create-category-container">
+                <button class="btn create-page-btn" id="show-create-category-form"><span>Створити нову категорію</span></button>
+                <div class="create-category-form" style="display: none;">
+                    <form class="create-form-category" action="javascript:void(0);" method="POST" onsubmit="addCategory()">
+                        <h2 class="create-title">Створення категорії</h2>
+                        <div class="input-items">
+                            <input class="input-item" type="text" id="add-name-category" placeholder="Назва категорії">
+                            <input class="input-item" type="text" id="add-description-category" placeholder="Опис категорії"> <!-- Оновлений ідентифікатор поля опису категорії -->
+                        </div>
+                        <button class="btn create-btn"><span>Створити категорію</span></button>
+                    </form>
+                </div>
+            </div>
+
+            <p id="counter-category"></p>
+            <table class="table">
+                <tr>
+                    <th class="table-name">Назва</th>
+                    <th class="table-name">Опис</th>
+                </tr>
+                <tbody id="categories"></tbody>
+            </table>
+            <div class="edit-category-container" id="editCategory" style="display: none;">
+                <form class="edit-form-category" action="javascript:void(0);" onsubmit="updateCategory()">
+                    <div class="title-close-block">
+                        <a class="close-btn" onclick="closeInput()" aria-label="Close">&#10006;</a>
+                        <h2>Редагування категорії</h2>
+                    </div>
+                    <div class="input-items">
+                        <input class="input-item" type="hidden" id="edit-id-category">
+                        <input class="input-item" type="text" id="edit-name-category" placeholder="Назва категорії">
+                        <input class="input-item" type="text" id="edit-desctiption-category" placeholder="Опис категорії">
+                    </div>
+                    <button class="btn save-btn"><span>Зберегти зміни</span></button>
+                </form>
+            </div>
+        </div>
+        <div class="content-container-author">
+            <div class="create-author-container">
+                <button class="btn create-page-btn" id="show-create-author-form"><span>Створити нового автора</span></button>
+                <div class="create-author-form" style="display: none;">
+                    <form class="create-form-author" action="javascript:void(0);" method="POST" onsubmit="addAuthor()">
+                        <h2 class="create-title">Створення автора</h2>
+                        <div class="input-items">
+                            <input class="input-item" type="text" id="add-name-author" placeholder="ПІБ автора">
+                            <input class="input-item" type="text" id="add-description-author" placeholder="Біографія автора">
+                            <input class="input-item" type="date" id="add-birthday-author" placeholder="Дата народження автора">
+                        </div>
+                        <button class="btn create-btn"><span>Створити автора</span></button>
+                    </form>
+                </div>
+            </div>
+
+            <p id="counter-author"></p>
+            <table class="table author-table">
+                <tr>
+                    <th class="table-name">ПІБ</th>
+                    <th class="table-name">Біографія</th>
+                    <th class="table-name">Дата народження</th>
+                </tr>
+                <tbody id="authors"></tbody>
+            </table>
+            <div class="edit-author-container" id="editAuthor" style="display: none;">
+                <form class="edit-form-author" action="javascript:void(0);" onsubmit="updateAuthor()">
+                    <div class="title-close-block">
+                        <a class="close-btn" onclick="closeInputAuthor()" aria-label="Close">✖</a>
+                        <h2>Редагування автора</h2>
+                    </div>
+                    <div class="input-items">
+                        <input class="input-item" type="hidden" id="edit-id-author">
+                        <input class="input-item" type="text" id="edit-name-author" placeholder="ПІБ автора">
+                        <input class="input-item" type="text" id="edit-description-author" placeholder="Біографія автора">
+                        <input class="input-item" type="date" id="edit-birthday-author">
+                    </div>
+                    <button class="btn save-btn"><span>Зберегти зміни</span></button>
+                </form>
+            </div>
+        </div>
+
+
+        <script src="js/author.js" asp-append-version="true"></script>
+
+        <script src="js/category.js" asp-append-version="true"></script>
+        <script type="text/javascript">
+            getCategories();
+            getAuthors();
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="js/site.js"></script>
     </div>
 
 </body>

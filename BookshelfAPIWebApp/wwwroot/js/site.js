@@ -13,3 +13,17 @@
         }
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const showFormButton = document.getElementById('show-create-author-form');
+    const authorForm = document.querySelector('.create-author-form');
+
+    showFormButton.addEventListener('click', function () {
+        if (authorForm.style.display === 'none') {
+            authorForm.style.display = 'block';
+        } else {
+            authorForm.style.display = 'none';
+        }
+    });
+});
+

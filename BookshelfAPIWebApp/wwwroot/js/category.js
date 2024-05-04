@@ -17,12 +17,12 @@ function getCategories() {
 }
 
 function addCategory() {
-    const addNameTextbox = document.getElementById('add-name');
-    const addDescriptionTextbox = document.getElementById('add-description'); // Змінено належним чином
+    const addNameTextbox = document.getElementById('add-name-category');
+    const addDescriptionTextbox = document.getElementById('add-description-category'); 
 
     const category = {
         name: addNameTextbox.value.trim(),
-        description: addDescriptionTextbox.value.trim(), // Змінено належним чином
+        description: addDescriptionTextbox.value.trim(), 
     };
 
     fetch(uri, {
@@ -42,7 +42,7 @@ function addCategory() {
         .then(() => {
             getCategories();
             addNameTextbox.value = '';
-            addDescriptionTextbox.value = ''; // Очистити поле опису після додавання
+            addDescriptionTextbox.value = ''; 
         })
         .catch(error => {
             showError(error.message);
@@ -53,26 +53,30 @@ function deleteCategory(id) {
     fetch(`${uri}/${id}`, {
         method: 'DELETE'
     })
-        .then(() => getCategories())
+        .then(() => {
+            getCategories();
+            categories = categories.filter(category => category.id !== id);
+            _displayCategories(categories);
+        })
         .catch(error => console.error('Неможливо видалити категорію.', error));
 }
+
 
 function displayEditForm(id) {
     const category = categories.find(category => category.id === id);
 
-    document.getElementById('edit-id').value = category.id;
-    document.getElementById('edit-name').value = category.name;
-    document.getElementById('edit-desctiption').value = category.description;
+    document.getElementById('edit-id-category').value = category.id;
+    document.getElementById('edit-name-category').value = category.name;
+    document.getElementById('edit-desctiption-category').value = category.description;
 
     const rowIndex = categories.findIndex(category => category.id === id);
     const table = document.querySelector('.table');
-    const row = table.rows[rowIndex + 1]; // +1 because of header row
+    const row = table.rows[rowIndex + 1]; 
 
     const nextRow = row.nextSibling;
 
     const editContainer = document.getElementById('editCategory');
 
-    // Insert edit container after the selected row
     if (nextRow) {
         nextRow.parentNode.insertBefore(editContainer, nextRow);
     } else {
@@ -85,9 +89,9 @@ function displayEditForm(id) {
 
 
 function updateCategory() {
-    const categoryId = document.getElementById('edit-id').value;
-    const categoryName = document.getElementById('edit-name').value.trim();
-    const categoryDescription = document.getElementById('edit-desctiption').value.trim();
+    const categoryId = document.getElementById('edit-id-category').value; 
+    const categoryName = document.getElementById('edit-name-category').value.trim();
+    const categoryDescription = document.getElementById('edit-desctiption-category').value.trim(); 
 
     const category = {
         id: parseInt(categoryId, 10),
@@ -120,6 +124,7 @@ function updateCategory() {
 
 
 
+
 function closeInput() {
     document.getElementById('editCategory').style.display = 'none';
 }
@@ -148,7 +153,7 @@ function _displayCategories(data) {
         td1.appendChild(textNode);
 
         let td2 = tr.insertCell(1);
-        let textNodeDescription = document.createTextNode(category.description); // Використовуємо значення опису
+        let textNodeDescription = document.createTextNode(category.description); 
         td2.appendChild(textNodeDescription);
 
         let td3 = tr.insertCell(2);
