@@ -18,11 +18,11 @@ function getCategories() {
 
 function addCategory() {
     const addNameTextbox = document.getElementById('add-name-category');
-    const addDescriptionTextbox = document.getElementById('add-description-category'); 
+    const addDescriptionTextbox = document.getElementById('add-description-category');
 
     const category = {
         name: addNameTextbox.value.trim(),
-        description: addDescriptionTextbox.value.trim(), 
+        description: addDescriptionTextbox.value.trim(),
     };
 
     fetch(uri, {
@@ -35,14 +35,16 @@ function addCategory() {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Неможливо створити категорію.');
+                return response.text().then(errorText => {
+                    throw new Error(`Неможливо створити категорію. Категорія з такою назвою вже існує.`);
+                });
             }
             return response.json();
         })
         .then(() => {
             getCategories();
             addNameTextbox.value = '';
-            addDescriptionTextbox.value = ''; 
+            addDescriptionTextbox.value = '';
         })
         .catch(error => {
             showError(error.message);
@@ -63,28 +65,20 @@ function deleteCategory(id) {
 
 
 function displayEditForm(id) {
+    document.getElementById('edit-id-category').value = '';
+    document.getElementById('edit-name-category').value = '';
+    document.getElementById('edit-desctiption-category').value = '';
+
     const category = categories.find(category => category.id === id);
-
-    document.getElementById('edit-id-category').value = category.id;
-    document.getElementById('edit-name-category').value = category.name;
-    document.getElementById('edit-desctiption-category').value = category.description;
-
-    const rowIndex = categories.findIndex(category => category.id === id);
-    const table = document.querySelector('.table');
-    const row = table.rows[rowIndex + 1]; 
-
-    const nextRow = row.nextSibling;
-
-    const editContainer = document.getElementById('editCategory');
-
-    if (nextRow) {
-        nextRow.parentNode.insertBefore(editContainer, nextRow);
-    } else {
-        table.appendChild(editContainer);
+    if (category) {
+        document.getElementById('edit-id-category').value = category.id;
+        document.getElementById('edit-name-category').value = category.name;
+        document.getElementById('edit-desctiption-category').value = category.description;
     }
 
-    editContainer.style.display = 'block';
+    document.getElementById('editCategory').style.display = 'block';
 }
+
 
 
 
@@ -139,7 +133,10 @@ function _displayCategories(data) {
         let editButton = button.cloneNode(false);
         editButton.innerText = 'Редагувати';
         editButton.classList.add('edit-btn', 'btn');
-        editButton.setAttribute('onclick', `displayEditForm(${category.id})`);
+
+        editButton.addEventListener('click', () => {
+            displayEditForm(category.id);
+        });
 
         let deleteButton = button.cloneNode(false);
         deleteButton.innerText = 'Видалити';
@@ -153,7 +150,7 @@ function _displayCategories(data) {
         td1.appendChild(textNode);
 
         let td2 = tr.insertCell(1);
-        let textNodeDescription = document.createTextNode(category.description); 
+        let textNodeDescription = document.createTextNode(category.description);
         td2.appendChild(textNodeDescription);
 
         let td3 = tr.insertCell(2);

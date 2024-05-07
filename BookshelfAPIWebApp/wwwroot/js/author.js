@@ -15,8 +15,8 @@ function addAuthor() {
 
     const author = {
         name: addNameTextbox.value.trim(),
-        description: addDescriptionTextbox.value.trim(),
-        birthday: addBirthdayTextbox.value.trim()
+        description: addDescriptionTextbox.value.trim() === '' ? '' : addDescriptionTextbox.value.trim(),
+        birthday: addBirthdayTextbox.value.trim() === '' ? null : addBirthdayTextbox.value.trim(),
     };
 
     fetch(uriAuthor, {
@@ -86,7 +86,7 @@ function displayEditFormAuthor(id) {
 function updateAuthor() {
     const authorId = document.getElementById('edit-id-author').value;
     const authorName = document.getElementById('edit-name-author').value.trim();
-    const authorDescription = document.getElementById('edit-description-author').value.trim();
+    const authorDescription = document.getElementById('edit-description-author').value.trim() === '' ? '' : document.getElementById('edit-description-author').value.trim();
     const authorBirthday = document.getElementById('edit-birthday-author').value.trim();
 
     const author = {

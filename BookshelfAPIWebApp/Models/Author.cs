@@ -9,11 +9,17 @@ namespace BookshelfAPIWebApp.Models
             BookAuthors = new List<BookAuthor>();
         }
         public int Id { get; set; }
+
+
         [Required(ErrorMessage = "Введіть ім'я та прізвище автора")]
         [Display(Name = "Ім'я та прізвище")]
         public string Name { get; set; }
+
+
         [Display(Name = "Опис")]
         public string? Description { get; set; }
+
+
         [Display(Name = "Дата народження")]
         public DateOnly? Birthday { get; set; }
 

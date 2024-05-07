@@ -24,8 +24,24 @@ namespace BookshelfAPIWebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
         {
-            return await _context.Authors.ToListAsync();
+            var authors = await _context.Authors.ToListAsync();
+
+            if (authors.Count == 0)
+            {
+                return NotFound("Жодного автора ще не створено");
+            }
+
+            var result = authors.Select(author => new
+            {
+                Id = author.Id,
+                Name = author.Name,
+                Description = author.Description,
+                Birthday = author.Birthday != null ? author.Birthday.ToString() : ""
+            });
+
+            return Ok(result);
         }
+
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
@@ -35,7 +51,7 @@ namespace BookshelfAPIWebApp.Controllers
 
             if (author == null)
             {
-                return NotFound();
+                return NotFound("Автор не знайдений");
             }
 
             return author;
@@ -48,7 +64,17 @@ namespace BookshelfAPIWebApp.Controllers
         {
             if (id != author.Id)
             {
-                return BadRequest();
+                return BadRequest($"Автора з Id {id} не знайдено");
+            }
+
+            if (_context.Authors.Any(a => a.Name == author.Name && a.Description == author.Description))
+            {
+                return BadRequest("Автор з таким іменем та біографією вже існує");
+            }
+
+            if (author.Birthday?.Year < 1800 || author.Birthday > DateOnly.FromDateTime(DateTime.Today.AddYears(-15)))
+            {
+                return BadRequest("Дата народження автора має бути не меншою за 1800 рік і автору не може бути менше 15 років.");
             }
 
             _context.Entry(author).State = EntityState.Modified;
@@ -61,15 +87,20 @@ namespace BookshelfAPIWebApp.Controllers
             {
                 if (!AuthorExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Автора не знайдено");
                 }
+
+                
                 else
                 {
                     throw;
                 }
             }
 
-            return NoContent();
+
+
+
+            return Ok("Інформацію про автора успішно оновлено");
         }
 
         // POST: api/Authors
@@ -77,6 +108,16 @@ namespace BookshelfAPIWebApp.Controllers
         [HttpPost]
         public async Task<ActionResult<Author>> PostAuthor(Author author)
         {
+            if (_context.Authors.Any(a => a.Name == author.Name && a.Description == author.Description))
+            {
+                return BadRequest("Автор з таким іменем та біографією вже існує");
+            }
+
+            if (author.Birthday?.Year < 1800 || author.Birthday > DateOnly.FromDateTime(DateTime.Today.AddYears(-15)))
+            {
+                return BadRequest("Дата народження автора має бути не меншою за 1800 рік і автору не може бути менше 15 років.");
+            }
+
             _context.Authors.Add(author);
             await _context.SaveChangesAsync();
 
@@ -90,18 +131,20 @@ namespace BookshelfAPIWebApp.Controllers
             var author = await _context.Authors.FindAsync(id);
             if (author == null)
             {
-                return NotFound();
+                return NotFound("Автора не знайдено");
             }
 
             _context.Authors.Remove(author);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Автора успішно видалено");
         }
 
         private bool AuthorExists(int id)
         {
             return _context.Authors.Any(e => e.Id == id);
         }
+
+
     }
 }
