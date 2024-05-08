@@ -20,7 +20,7 @@ function addAuthor() {
     };
 
     fetch(uriAuthor, {
-        method: 'POST',
+        method: 'POST', 
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'

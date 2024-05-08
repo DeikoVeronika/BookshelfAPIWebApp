@@ -2,15 +2,14 @@
 
 namespace BookshelfAPIWebApp.Models;
 
-public class Category
+public class Genre
 {
-
     public int Id { get; set; }
-    [Required(ErrorMessage = "Введіть назву категорії")]
-    [Display(Name = "Назва категорії")]
+
+    [Required(ErrorMessage = "Введіть назву жанру")]
+    [Display(Name = "Назва жанру")]
     public string Name { get; set; }
-    [Display(Name = "Опис")]
-    public string? Description { get; set; }
+
     public virtual ICollection<Book> Books { get; set; } = new List<Book>();
 
 }

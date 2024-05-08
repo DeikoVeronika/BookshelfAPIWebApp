@@ -1,28 +1,25 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace BookshelfAPIWebApp.Models
+namespace BookshelfAPIWebApp.Models;
+
+public class Author
 {
-    public class Author
-    {
-        public Author()
-        {
-            BookAuthors = new List<BookAuthor>();
-        }
-        public int Id { get; set; }
+
+    public int Id { get; set; }
 
 
-        [Required(ErrorMessage = "Введіть ім'я та прізвище автора")]
-        [Display(Name = "Ім'я та прізвище")]
-        public string Name { get; set; }
+    [Required(ErrorMessage = "Введіть ім'я та прізвище автора")]
+    [Display(Name = "Ім'я та прізвище")]
+    public string Name { get; set; }
 
 
-        [Display(Name = "Опис")]
-        public string? Description { get; set; }
+    [Display(Name = "Опис")]
+    public string? Description { get; set; }
 
 
-        [Display(Name = "Дата народження")]
-        public DateOnly? Birthday { get; set; }
+    [Display(Name = "Дата народження")]
+    public DateOnly? Birthday { get; set; }
 
-        public virtual ICollection<BookAuthor> BookAuthors { get; set; }
-    }
+    public virtual ICollection<Book> Books { get; set; } = new List<Book>();
 }

@@ -24,16 +24,8 @@ namespace BookshelfAPIWebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
         {
-            var categories = await _context.Categories.ToListAsync();
-
-            if (categories.Count == 0)
-            {
-                return NotFound("Жодної категорії ще не створено");
-            }
-
-            return categories;
+            return await _context.Categories.ToListAsync();
         }
-
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
@@ -43,12 +35,11 @@ namespace BookshelfAPIWebApp.Controllers
 
             if (category == null)
             {
-                return NotFound("Категорія не знайдена");
+                return NotFound();
             }
 
             return category;
         }
-
 
         // PUT: api/Categories/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -57,10 +48,9 @@ namespace BookshelfAPIWebApp.Controllers
         {
             if (id != category.Id)
             {
-                return BadRequest($"Категорію з Id {id} не знайдено");
+                return BadRequest();
             }
 
-            
             _context.Entry(category).State = EntityState.Modified;
 
             try
@@ -71,7 +61,7 @@ namespace BookshelfAPIWebApp.Controllers
             {
                 if (!CategoryExists(id))
                 {
-                    return NotFound("Категорія не знайдена");
+                    return NotFound();
                 }
                 else
                 {
@@ -79,32 +69,19 @@ namespace BookshelfAPIWebApp.Controllers
                 }
             }
 
-            if (_context.Categories.Any(c => c.Name == category.Name && c.Id != id))
-            {
-                return BadRequest("Категорія з такою назвою вже існує");
-            }
-
-
-            return Ok("Категорію успішно оновлено");
+            return NoContent();
         }
-
 
         // POST: api/Categories
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Category>> PostCategory(Category category)
         {
-            if (_context.Categories.Any(c => c.Name == category.Name))
-            {
-                return BadRequest("Категорія з такою назвою вже існує");
-            }
-
             _context.Categories.Add(category);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCategory", new { id = category.Id }, category);
         }
-
 
         // DELETE: api/Categories/5
         [HttpDelete("{id}")]
@@ -113,13 +90,13 @@ namespace BookshelfAPIWebApp.Controllers
             var category = await _context.Categories.FindAsync(id);
             if (category == null)
             {
-                return NotFound("Категорія не знайдена");
+                return NotFound();
             }
 
             _context.Categories.Remove(category);
             await _context.SaveChangesAsync();
 
-            return Ok("Категорію успішно видалено");
+            return NoContent();
         }
 
         private bool CategoryExists(int id)

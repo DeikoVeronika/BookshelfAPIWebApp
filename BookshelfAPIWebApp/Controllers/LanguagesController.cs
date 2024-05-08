@@ -11,47 +11,47 @@ namespace BookshelfAPIWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookCategoriesController : ControllerBase
+    public class LanguagesController : ControllerBase
     {
         private readonly BookshelfAPIContext _context;
 
-        public BookCategoriesController(BookshelfAPIContext context)
+        public LanguagesController(BookshelfAPIContext context)
         {
             _context = context;
         }
 
-        // GET: api/BookCategories
+        // GET: api/Languages
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookCategory>>> GetBookCategories()
+        public async Task<ActionResult<IEnumerable<Language>>> GetLanguages()
         {
-            return await _context.BookCategories.ToListAsync();
+            return await _context.Languages.ToListAsync();
         }
 
-        // GET: api/BookCategories/5
+        // GET: api/Languages/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BookCategory>> GetBookCategory(int id)
+        public async Task<ActionResult<Language>> GetLanguage(int id)
         {
-            var bookCategory = await _context.BookCategories.FindAsync(id);
+            var language = await _context.Languages.FindAsync(id);
 
-            if (bookCategory == null)
+            if (language == null)
             {
                 return NotFound();
             }
 
-            return bookCategory;
+            return language;
         }
 
-        // PUT: api/BookCategories/5
+        // PUT: api/Languages/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBookCategory(int id, BookCategory bookCategory)
+        public async Task<IActionResult> PutLanguage(int id, Language language)
         {
-            if (id != bookCategory.Id)
+            if (id != language.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(bookCategory).State = EntityState.Modified;
+            _context.Entry(language).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace BookshelfAPIWebApp.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookCategoryExists(id))
+                if (!LanguageExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +72,36 @@ namespace BookshelfAPIWebApp.Controllers
             return NoContent();
         }
 
-        // POST: api/BookCategories
+        // POST: api/Languages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BookCategory>> PostBookCategory(BookCategory bookCategory)
+        public async Task<ActionResult<Language>> PostLanguage(Language language)
         {
-            _context.BookCategories.Add(bookCategory);
+            _context.Languages.Add(language);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBookCategory", new { id = bookCategory.Id }, bookCategory);
+            return CreatedAtAction("GetLanguage", new { id = language.Id }, language);
         }
 
-        // DELETE: api/BookCategories/5
+        // DELETE: api/Languages/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBookCategory(int id)
+        public async Task<IActionResult> DeleteLanguage(int id)
         {
-            var bookCategory = await _context.BookCategories.FindAsync(id);
-            if (bookCategory == null)
+            var language = await _context.Languages.FindAsync(id);
+            if (language == null)
             {
                 return NotFound();
             }
 
-            _context.BookCategories.Remove(bookCategory);
+            _context.Languages.Remove(language);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool BookCategoryExists(int id)
+        private bool LanguageExists(int id)
         {
-            return _context.BookCategories.Any(e => e.Id == id);
+            return _context.Languages.Any(e => e.Id == id);
         }
     }
 }

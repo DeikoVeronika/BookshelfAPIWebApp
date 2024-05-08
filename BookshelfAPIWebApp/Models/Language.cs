@@ -2,15 +2,14 @@
 
 namespace BookshelfAPIWebApp.Models;
 
-public class Category
+public class Language
 {
-
     public int Id { get; set; }
-    [Required(ErrorMessage = "Введіть назву категорії")]
-    [Display(Name = "Назва категорії")]
+
+    [Required(ErrorMessage = "Введіть мову")]
+    [Display(Name = "Мова")]
     public string Name { get; set; }
-    [Display(Name = "Опис")]
-    public string? Description { get; set; }
+
     public virtual ICollection<Book> Books { get; set; } = new List<Book>();
 
 }

@@ -11,47 +11,47 @@ namespace BookshelfAPIWebApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookAuthorsController : ControllerBase
+    public class GenresController : ControllerBase
     {
         private readonly BookshelfAPIContext _context;
 
-        public BookAuthorsController(BookshelfAPIContext context)
+        public GenresController(BookshelfAPIContext context)
         {
             _context = context;
         }
 
-        // GET: api/BookAuthors
+        // GET: api/Genres
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookAuthor>>> GetBookAuthors()
+        public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
         {
-            return await _context.BookAuthors.ToListAsync();
+            return await _context.Genres.ToListAsync();
         }
 
-        // GET: api/BookAuthors/5
+        // GET: api/Genres/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<BookAuthor>> GetBookAuthor(int id)
+        public async Task<ActionResult<Genre>> GetGenre(int id)
         {
-            var bookAuthor = await _context.BookAuthors.FindAsync(id);
+            var genre = await _context.Genres.FindAsync(id);
 
-            if (bookAuthor == null)
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            return bookAuthor;
+            return genre;
         }
 
-        // PUT: api/BookAuthors/5
+        // PUT: api/Genres/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBookAuthor(int id, BookAuthor bookAuthor)
+        public async Task<IActionResult> PutGenre(int id, Genre genre)
         {
-            if (id != bookAuthor.Id)
+            if (id != genre.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(bookAuthor).State = EntityState.Modified;
+            _context.Entry(genre).State = EntityState.Modified;
 
             try
             {
@@ -59,7 +59,7 @@ namespace BookshelfAPIWebApp.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!BookAuthorExists(id))
+                if (!GenreExists(id))
                 {
                     return NotFound();
                 }
@@ -72,36 +72,36 @@ namespace BookshelfAPIWebApp.Controllers
             return NoContent();
         }
 
-        // POST: api/BookAuthors
+        // POST: api/Genres
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<BookAuthor>> PostBookAuthor(BookAuthor bookAuthor)
+        public async Task<ActionResult<Genre>> PostGenre(Genre genre)
         {
-            _context.BookAuthors.Add(bookAuthor);
+            _context.Genres.Add(genre);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetBookAuthor", new { id = bookAuthor.Id }, bookAuthor);
+            return CreatedAtAction("GetGenre", new { id = genre.Id }, genre);
         }
 
-        // DELETE: api/BookAuthors/5
+        // DELETE: api/Genres/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBookAuthor(int id)
+        public async Task<IActionResult> DeleteGenre(int id)
         {
-            var bookAuthor = await _context.BookAuthors.FindAsync(id);
-            if (bookAuthor == null)
+            var genre = await _context.Genres.FindAsync(id);
+            if (genre == null)
             {
                 return NotFound();
             }
 
-            _context.BookAuthors.Remove(bookAuthor);
+            _context.Genres.Remove(genre);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool BookAuthorExists(int id)
+        private bool GenreExists(int id)
         {
-            return _context.BookAuthors.Any(e => e.Id == id);
+            return _context.Genres.Any(e => e.Id == id);
         }
     }
 }
