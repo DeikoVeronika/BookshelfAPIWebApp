@@ -20,12 +20,20 @@ namespace BookshelfAPIWebApp.Controllers
             _context = context;
         }
 
-        // GET: api/Languages
+        // GET: api/Languages    
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Language>>> GetLanguages()
         {
-            return await _context.Languages.ToListAsync();
+            var languages = await _context.Languages.ToListAsync();
+
+            if (languages.Count == 0)
+            {
+                return NotFound("Жодної мови ще не створено");
+            }
+
+            return languages;
         }
+
 
         // GET: api/Languages/5
         [HttpGet("{id}")]
@@ -35,7 +43,7 @@ namespace BookshelfAPIWebApp.Controllers
 
             if (language == null)
             {
-                return NotFound();
+                return NotFound("Мову не знайдено.");
             }
 
             return language;
@@ -48,10 +56,22 @@ namespace BookshelfAPIWebApp.Controllers
         {
             if (id != language.Id)
             {
-                return BadRequest();
+                return BadRequest($"Мову з Id {id} не знайдено.");
             }
 
-            _context.Entry(language).State = EntityState.Modified;
+            var existingLanguage = await _context.Languages.FindAsync(id);
+            if (existingLanguage == null)
+            {
+                return NotFound("Мова не знайдена.");
+            }
+
+            if (_context.Languages.Any(l => l.Name == language.Name && l.Id != id))
+            {
+                return BadRequest("Мова з такою назвою вже існує.");
+            }
+
+            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
+            _context.Entry(existingLanguage).CurrentValues.SetValues(language);
 
             try
             {
@@ -61,7 +81,7 @@ namespace BookshelfAPIWebApp.Controllers
             {
                 if (!LanguageExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Мова не знайдена.");
                 }
                 else
                 {
@@ -69,14 +89,20 @@ namespace BookshelfAPIWebApp.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Мову успішно оновлено.");
         }
+
 
         // POST: api/Languages
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Language>> PostLanguage(Language language)
         {
+            if (_context.Languages.Any(l => l.Name == language.Name))
+            {
+                return BadRequest("Мова з такою назвою вже існує.");
+            }
+
             _context.Languages.Add(language);
             await _context.SaveChangesAsync();
 
@@ -90,13 +116,13 @@ namespace BookshelfAPIWebApp.Controllers
             var language = await _context.Languages.FindAsync(id);
             if (language == null)
             {
-                return NotFound();
+                return NotFound("Мову не знайдено.");
             }
 
             _context.Languages.Remove(language);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Мову успішно видалено.");
         }
 
         private bool LanguageExists(int id)

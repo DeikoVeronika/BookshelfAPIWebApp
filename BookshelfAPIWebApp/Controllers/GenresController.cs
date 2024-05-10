@@ -24,8 +24,16 @@ namespace BookshelfAPIWebApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
         {
-            return await _context.Genres.ToListAsync();
+            var genres = await _context.Genres.ToListAsync();
+
+            if (genres.Count == 0)
+            {
+                return NotFound("Жодного жанру ще не створено");
+            }
+
+            return genres;
         }
+
 
         // GET: api/Genres/5
         [HttpGet("{id}")]
@@ -35,7 +43,7 @@ namespace BookshelfAPIWebApp.Controllers
 
             if (genre == null)
             {
-                return NotFound();
+                return NotFound("Жанр не знайдено.");
             }
 
             return genre;
@@ -48,10 +56,22 @@ namespace BookshelfAPIWebApp.Controllers
         {
             if (id != genre.Id)
             {
-                return BadRequest();
+                return BadRequest($"Жанр з Id {id} не знайдено.");
             }
 
-            _context.Entry(genre).State = EntityState.Modified;
+            var existingGenre = await _context.Genres.FindAsync(id);
+            if (existingGenre == null)
+            {
+                return NotFound("Жанр не знайдено.");
+            }
+
+            if (_context.Genres.Any(g => g.Name == genre.Name && g.Id != id))
+            {
+                return BadRequest("Жанр з такою назвою вже існує.");
+            }
+
+            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
+            _context.Entry(existingGenre).CurrentValues.SetValues(genre);
 
             try
             {
@@ -61,7 +81,7 @@ namespace BookshelfAPIWebApp.Controllers
             {
                 if (!GenreExists(id))
                 {
-                    return NotFound();
+                    return NotFound("Жанр не знайдено.");
                 }
                 else
                 {
@@ -69,14 +89,20 @@ namespace BookshelfAPIWebApp.Controllers
                 }
             }
 
-            return NoContent();
+            return Ok("Жанр успішно оновлено.");
         }
+
 
         // POST: api/Genres
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Genre>> PostGenre(Genre genre)
         {
+            if (_context.Genres.Any(g => g.Name == genre.Name))
+            {
+                return BadRequest("Жанр з такою назвою вже існує");
+            }
+
             _context.Genres.Add(genre);
             await _context.SaveChangesAsync();
 
@@ -90,13 +116,13 @@ namespace BookshelfAPIWebApp.Controllers
             var genre = await _context.Genres.FindAsync(id);
             if (genre == null)
             {
-                return NotFound();
+                return NotFound("Жанр не знайдено.");
             }
 
             _context.Genres.Remove(genre);
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Жанр успішно видалено.");
         }
 
         private bool GenreExists(int id)
