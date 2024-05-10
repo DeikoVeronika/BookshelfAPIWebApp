@@ -36,7 +36,8 @@ namespace BookshelfAPIWebApp.Controllers
                 Id = author.Id,
                 Name = author.Name,
                 Description = author.Description,
-                Birthday = author.Birthday != null ? author.Birthday.ToString() : ""
+                Birthday = author.Birthday != null ? author.Birthday.ToString() : "",
+                Books = author.Books
             });
 
             return Ok(result);
@@ -58,7 +59,9 @@ namespace BookshelfAPIWebApp.Controllers
                 Id = author.Id,
                 Name = author.Name,
                 Description = author.Description,
-                Birthday = author.Birthday != null ? author.Birthday.ToString() : ""
+                Birthday = author.Birthday != null ? author.Birthday.ToString() : "",
+                Books = author.Books
+
             };
 
             return Ok(result);
