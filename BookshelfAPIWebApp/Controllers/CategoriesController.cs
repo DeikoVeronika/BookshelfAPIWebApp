@@ -69,11 +69,10 @@ namespace BookshelfAPIWebApp.Controllers
                 return BadRequest("Категорія з такою назвою вже існує.");
             }
 
-            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
-            _context.Entry(existingCategory).CurrentValues.SetValues(category);
-
             try
             {
+                // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
+                _context.Entry(existingCategory).CurrentValues.SetValues(category);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

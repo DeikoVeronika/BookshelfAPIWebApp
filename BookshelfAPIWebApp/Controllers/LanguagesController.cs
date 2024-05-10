@@ -70,11 +70,10 @@ namespace BookshelfAPIWebApp.Controllers
                 return BadRequest("Мова з такою назвою вже існує.");
             }
 
-            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
-            _context.Entry(existingLanguage).CurrentValues.SetValues(language);
-
             try
             {
+                // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
+                _context.Entry(existingLanguage).CurrentValues.SetValues(language);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)

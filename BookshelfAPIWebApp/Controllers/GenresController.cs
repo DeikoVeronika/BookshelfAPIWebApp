@@ -70,11 +70,10 @@ namespace BookshelfAPIWebApp.Controllers
                 return BadRequest("Жанр з такою назвою вже існує.");
             }
 
-            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
-            _context.Entry(existingGenre).CurrentValues.SetValues(genre);
-
             try
             {
+                // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
+                _context.Entry(existingGenre).CurrentValues.SetValues(genre);
                 await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
