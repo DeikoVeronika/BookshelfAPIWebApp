@@ -93,9 +93,9 @@ public class AuthorsController : ControllerBase
             return BadRequest("Автор з таким іменем та біографією вже існує");
         }
 
-        if (author.Birthday?.Year < 1800 || author.Birthday > DateOnly.FromDateTime(DateTime.Today.AddYears(-15)))
+        if (author.Birthday?.Year < 1200 || author.Birthday > DateOnly.FromDateTime(DateTime.Today.AddYears(-15)))
         {
-            return BadRequest("Дата народження автора має бути не меншою за 1800 рік і автору не може бути менше 15 років.");
+            return BadRequest("Дата народження автора має бути не меншою за 1200 рік і автору не може бути менше 15 років.");
         }
 
         try
@@ -135,9 +135,9 @@ public class AuthorsController : ControllerBase
             return BadRequest("Автор з таким іменем та біографією вже існує");
         }
 
-        if (author.Birthday?.Year < 1800 || author.Birthday > DateOnly.FromDateTime(DateTime.Today.AddYears(-15)))
+        if (author.Birthday?.Year < 1200 || author.Birthday > DateOnly.FromDateTime(DateTime.Today.AddYears(-15)))
         {
-            return BadRequest("Дата народження автора має бути не меншою за 1800 рік і автору не може бути менше 15 років.");
+            return BadRequest("Дата народження автора має бути не меншою за 1200 рік і автору не може бути менше 15 років.");
         }
 
         _context.Authors.Add(author);
