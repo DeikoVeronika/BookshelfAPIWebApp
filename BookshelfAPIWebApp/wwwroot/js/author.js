@@ -19,8 +19,13 @@ function addAuthor() {
         birthday: addBirthdayTextbox.value.trim() === '' ? null : addBirthdayTextbox.value.trim(),
     };
 
+    if (!author.name) {
+        showError('Введіть ПІБ автора');
+        return;
+    }
+
     fetch(uriAuthor, {
-        method: 'POST', 
+        method: 'POST',
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
@@ -29,7 +34,9 @@ function addAuthor() {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Неможливо створити автора.');
+                return response.text().then(errorText => {
+                    throw new Error(errorText); // Throw the error message received from the server
+                });
             }
             return response.json();
         })
@@ -40,10 +47,11 @@ function addAuthor() {
             addBirthdayTextbox.value = '';
         })
         .catch(error => {
-            showError(error.message);
+            showError(error.message); // Display the error message on the client side
             console.error('Неможливо створити автора.', error);
         });
 }
+
 
 function deleteAuthor(id) {
     fetch(`${uriAuthor}/${id}`, {
@@ -58,36 +66,54 @@ function deleteAuthor(id) {
 }
 
 
+
+
+//////function displayEditFormAuthor(id) {
+
+//////    document.getElementById('edit-id-author').value = '';
+//////    document.getElementById('edit-name-author').value = '';
+//////    document.getElementById('edit-description-author').value = '';
+//////    document.getElementById('edit-birthday-author').value = '';
+
+//////    const author = authors.find(author => author.id === id);
+
+//////    if (author) {
+//////            document.getElementById('edit-id-author').value = author.id;
+//////            document.getElementById('edit-name-author').value = author.name;
+//////            document.getElementById('edit-description-author').value = author.description;
+//////            document.getElementById('edit-birthday-author').value = author.birthday;
+//////    }
+//////    document.getElementById('editAuthor').style.display = 'block';
+//////}
+
+
 function displayEditFormAuthor(id) {
     const author = authors.find(author => author.id === id);
 
-    document.getElementById('edit-id-author').value = author.id;
-    document.getElementById('edit-name-author').value = author.name;
-    document.getElementById('edit-description-author').value = author.description;
-    document.getElementById('edit-birthday-author').value = author.birthday;
-
-    const rowIndex = authors.findIndex(author => author.id === id);
-    const table = document.getElementById('authors').parentNode;
-    const row = table.rows[rowIndex + 1];
-
-    const nextRow = row.nextSibling;
-
-    const editContainer = document.getElementById('editAuthor');
-
-    if (nextRow) {
-        nextRow.parentNode.insertBefore(editContainer, nextRow);
+    if (author) {
+        document.getElementById('edit-id-author').value = author.id || '';
+        document.getElementById('edit-name-author').value = author.name || '';
+        document.getElementById('edit-description-author').value = author.description || '';
+        document.getElementById('edit-birthday-author').value = author.birthday || '';
     } else {
-        table.appendChild(editContainer);
+        document.getElementById('edit-id-author').value = '';
+        document.getElementById('edit-name-author').value = '';
+        document.getElementById('edit-description-author').value = '';
+        document.getElementById('edit-birthday-author').value = '';
     }
-
-    editContainer.style.display = 'block';
+    document.getElementById('editAuthor').style.display = 'block';
 }
+
+
+
 
 function updateAuthor() {
     const authorId = document.getElementById('edit-id-author').value;
     const authorName = document.getElementById('edit-name-author').value.trim();
-    const authorDescription = document.getElementById('edit-description-author').value.trim() === '' ? '' : document.getElementById('edit-description-author').value.trim();
-    const authorBirthday = document.getElementById('edit-birthday-author').value.trim();
+    const authorDescriptionTextbox = document.getElementById('edit-description-author');
+    const authorDescription = authorDescriptionTextbox.value.trim() === '' ? '' : authorDescriptionTextbox.value.trim();
+    const authorBirthdayTextbox = document.getElementById('edit-birthday-author');
+    const authorBirthday = authorBirthdayTextbox.value.trim() === '' ? null : authorBirthdayTextbox.value.trim();
 
     const author = {
         id: parseInt(authorId, 10),
@@ -95,6 +121,11 @@ function updateAuthor() {
         description: authorDescription,
         birthday: authorBirthday
     };
+
+    if (!author.name) {
+        showError('Введіть ПІБ автора');
+        return;
+    }
 
     fetch(`${uriAuthor}/${authorId}`, {
         method: 'PUT',
@@ -106,13 +137,15 @@ function updateAuthor() {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Неможливо оновити автора. Автор з таким іменем вже існує.');
+                return response.text().then(errorText => {
+                    throw new Error(errorText); // Throw the error message received from the server
+                });
             }
             getAuthors();
             closeInputAuthor();
         })
         .catch(error => {
-            showError(error.message);
+            showError(error.message); // Display the error message on the client side
             console.error('Неможливо оновити автора.', error);
         });
 

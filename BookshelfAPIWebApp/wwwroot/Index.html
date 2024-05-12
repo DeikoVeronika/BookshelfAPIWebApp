@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title>Головна сторінка</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="stylesheet" href="css/site.css" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet">
@@ -21,10 +22,16 @@
                 </div>
                 <ul class="navbar-items">
                     <li class="nav-item">
-                        <a class="nav-link" href="/Category.html">Категорії</a>
+                        <a class="nav-link" href="#Categories">Категорії</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/Author.html">Автори</a>
+                        <a class="nav-link" href="#Authors">Автори</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#Genres">Жанри</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#Languages">Мови</a>
                     </li>
                     <li class="nav-item-favorite">
                         <a class="nav-link-favorite" href="#">
@@ -44,7 +51,8 @@
             </div>
         </div>
 
-        <div class="content-container-category">
+        <!-- start category -->
+        <div id="Categories" class="content-container-category">
             <div class="create-category-container">
                 <button class="btn create-page-btn" id="show-create-category-form"><span>Створити нову категорію</span></button>
                 <div class="create-category-form" style="display: none;">
@@ -82,7 +90,9 @@
                 </form>
             </div>
         </div>
-        <div class="content-container-author">
+        <!-- end category -->
+        <!-- start author -->
+        <div id="Authors" class="content-container-author">
             <div class="create-author-container">
                 <button class="btn create-page-btn" id="show-create-author-form"><span>Створити нового автора</span></button>
                 <div class="create-author-form" style="display: none;">
@@ -90,7 +100,7 @@
                         <h2 class="create-title">Створення автора</h2>
                         <div class="input-items">
                             <input class="input-item" type="text" id="add-name-author" placeholder="ПІБ автора">
-                            <input class="input-item" type="text" id="add-description-author" placeholder="Біографія автора">
+                            <input class="input-item" type="text" id="add-description-author" placeholder="Біографія автора (опціонально)">
                             <input class="input-item" type="date" id="add-birthday-author">
                         </div>
                         <button class="btn create-btn"><span>Створити автора</span></button>
@@ -116,21 +126,102 @@
                     <div class="input-items">
                         <input class="input-item" type="hidden" id="edit-id-author">
                         <input class="input-item" type="text" id="edit-name-author" placeholder="ПІБ автора">
-                        <input class="input-item" type="text" id="edit-description-author" placeholder="Біографія автора">
+                        <input class="input-item" type="text" id="edit-description-author" placeholder="Біографія автора (опціонально)">
                         <input class="input-item" type="date" id="edit-birthday-author">
                     </div>
                     <button class="btn save-btn"><span>Зберегти зміни</span></button>
                 </form>
             </div>
         </div>
+        <!-- end author -->
+        <!-- start genre -->
+        <div id="Genres" class="content-container-genre">
+            <div class="create-genre-container">
+                <button class="btn create-page-btn" id="show-create-genre-form"><span>Створити новий жанр</span></button>
+                <div class="create-genre-form" style="display: none;">
+                    <form class="create-form-genre" action="javascript:void(0);" method="POST" onsubmit="addGenre()">
+                        <h2 class="create-title">Створення жанру</h2>
+                        <div class="input-items">
+                            <input class="input-item" type="text" id="add-name-genre" placeholder="Назва жанру">
+                        </div>
+                        <button class="btn create-btn"><span>Створити жанр</span></button>
+                    </form>
+                </div>
+            </div>
 
+            <p id="counter-genre"></p>
+            <table class="table genre-table">
+                <tr>
+                    <th class="table-name">Назва</th>
+                    <th class="table-name">Кількість книг</th>
+                </tr>
+                <tbody id="genres"></tbody>
+            </table>
+            <div class="edit-genre-container" id="editGenre" style="display: none;">
+                <form class="edit-form-genre" action="javascript:void(0);" onsubmit="updateGenre()">
+                    <div class="title-close-block">
+                        <a class="close-btn" onclick="closeInputGenre()" aria-label="Close">✖</a>
+                        <h2>Редагування жанру</h2>
+                    </div>
+                    <div class="input-items">
+                        <input class="input-item" type="hidden" id="edit-id-genre">
+                        <input class="input-item" type="text" id="edit-name-genre" placeholder="Назва жанру">
+                    </div>
+                    <button class="btn save-btn"><span>Зберегти зміни</span></button>
+                </form>
+            </div>
+        </div>
+        <!-- end genre -->
+        <!-- start language -->
+        <div id="Languages" class="content-container-language">
+            <div class="create-language-container">
+                <button class="btn create-page-btn" id="show-create-language-form"><span>Створити нову мову</span></button>
+                <div class="create-language-form" style="display: none;">
+                    <form class="create-form-language" action="javascript:void(0);" method="POST" onsubmit="addLanguage()">
+                        <h2 class="create-title">Створення мови</h2>
+                        <div class="input-items">
+                            <input class="input-item" type="text" id="add-name-language" placeholder="Назва мови">
+                        </div>
+                        <button class="btn create-btn"><span>Створити мову</span></button>
+                    </form>
+                </div>
+            </div>
+
+            <p id="counter-language"></p>
+            <table class="table language-table">
+                <tr>
+                    <th class="table-name">Назва</th>
+                    <th class="table-name">Кількість книг</th>
+                </tr>
+                <tbody id="languages"></tbody>
+            </table>
+            <div class="edit-language-container" id="editLanguage" style="display: none;">
+                <form class="edit-form-language" action="javascript:void(0);" onsubmit="updateLanguage()">
+                    <div class="title-close-block">
+                        <a class="close-btn" onclick="closeInputLanguage()" aria-label="Close">✖</a>
+                        <h2>Редагування мови</h2>
+                    </div>
+                    <div class="input-items">
+                        <input class="input-item" type="hidden" id="edit-id-language">
+                        <input class="input-item" type="text" id="edit-name-language" placeholder="Назва мови">
+                    </div>
+                    <button class="btn save-btn"><span>Зберегти зміни</span></button>
+                </form>
+            </div>
+        </div>
+
+        <!-- end language -->
 
         <script src="js/author.js" asp-append-version="true"></script>
-
         <script src="js/category.js" asp-append-version="true"></script>
+        <script src="js/genre.js" asp-append-version="true"></script>
+        <script src="js/language.js" asp-append-version="true"></script>
+
         <script type="text/javascript">
             getCategories();
             getAuthors();
+            getGenres();
+            getLanguages();
         </script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="js/site.js"></script>

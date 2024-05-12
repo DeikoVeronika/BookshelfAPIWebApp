@@ -7,125 +7,135 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BookshelfAPIWebApp.Models;
 
-namespace BookshelfAPIWebApp.Controllers
+namespace BookshelfAPIWebApp.Controllers;
+
+[Route("api/[controller]")]
+[ApiController]
+public class CategoriesController : ControllerBase
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CategoriesController : ControllerBase
+    private readonly BookshelfAPIContext _context;
+
+    public CategoriesController(BookshelfAPIContext context)
     {
-        private readonly BookshelfAPIContext _context;
+        _context = context;
+    }
 
-        public CategoriesController(BookshelfAPIContext context)
+    // GET: api/Categories
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+    {
+        var categories = await _context.Categories.OrderBy(category => category.Name).ToListAsync();
+
+        if (categories.Count == 0)
         {
-            _context = context;
+            return NotFound("Жодної категорії ще не створено");
         }
 
-        // GET: api/Categories
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Category>>> GetCategories()
+        return categories;
+    }
+
+    // GET: api/Categories/5
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Category>> GetCategory(int id)
+    {
+        var category = await _context.Categories.FindAsync(id);
+
+        if (category == null)
         {
-            var categories = await _context.Categories.ToListAsync();
-
-            if (categories.Count == 0)
-            {
-                return NotFound("Жодної категорії ще не створено");
-            }
-
-            return categories;
+            return NotFound("Категорію не знайдено.");
         }
 
-        // GET: api/Categories/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Category>> GetCategory(int id)
+        return category;
+    }
+
+    // PUT: api/Categories/5
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutCategory(int id, Category category)
+    {
+        if (id != category.Id)
         {
-            var category = await _context.Categories.FindAsync(id);
-
-            if (category == null)
-            {
-                return NotFound("Категорію не знайдено.");
-            }
-
-            return category;
+            return BadRequest($"Категорію з Id {id} не знайдено.");
         }
 
-        // PUT: api/Categories/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategory(int id, Category category)
+        var existingCategory = await _context.Categories.FindAsync(id);
+        if (existingCategory == null)
         {
-            if (id != category.Id)
-            {
-                return BadRequest($"Категорію з Id {id} не знайдено.");
-            }
+            return NotFound("Категорія не знайдена.");
+        }
 
-            var existingCategory = await _context.Categories.FindAsync(id);
-            if (existingCategory == null)
+        if (string.IsNullOrWhiteSpace(category.Name))
+        {
+            return BadRequest("Назва категорії не може бути порожньою");
+        }
+
+        if (_context.Categories.Any(c => c.Name == category.Name && c.Id != id))
+        {
+            return BadRequest("Категорія з такою назвою вже існує.");
+        }
+
+        try
+        {
+            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
+            _context.Entry(existingCategory).CurrentValues.SetValues(category);
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CategoryExists(id))
             {
                 return NotFound("Категорія не знайдена.");
             }
-
-            if (_context.Categories.Any(c => c.Name == category.Name && c.Id != id))
+            else
             {
-                return BadRequest("Категорія з такою назвою вже існує.");
+                throw;
             }
-
-            try
-            {
-                // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
-                _context.Entry(existingCategory).CurrentValues.SetValues(category);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoryExists(id))
-                {
-                    return NotFound("Категорія не знайдена.");
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return Ok("Категорію успішно оновлено.");
         }
 
+        return Ok("Категорію успішно оновлено.");
+    }
 
-        // POST: api/Categories
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Category>> PostCategory(Category category)
+
+    // POST: api/Categories
+    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [HttpPost]
+    public async Task<ActionResult<Category>> PostCategory(Category category)
+    {
+        if (string.IsNullOrWhiteSpace(category.Name))
         {
-            if (_context.Categories.Any(c => c.Name == category.Name))
-            {
-                return BadRequest("Категорія з такою назвою вже існує");
-            }
-
-            _context.Categories.Add(category);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+            return BadRequest("Назва категорії не може бути порожньою");
         }
 
-        // DELETE: api/Categories/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        if (_context.Categories.Any(c => c.Name == category.Name))
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                return NotFound("Категорія не знайдена");
-            }
-
-            _context.Categories.Remove(category);
-            await _context.SaveChangesAsync();
-
-            return Ok("Категорію успішно видалено");
+            return BadRequest("Категорія з такою назвою вже існує");
         }
 
-        private bool CategoryExists(int id)
+        _context.Categories.Add(category);
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction("GetCategory", new { id = category.Id }, category);
+    }
+
+
+    // DELETE: api/Categories/5
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteCategory(int id)
+    {
+        var category = await _context.Categories.FindAsync(id);
+        if (category == null)
         {
-            return _context.Categories.Any(e => e.Id == id);
+            return NotFound("Категорія не знайдена");
         }
+
+        _context.Categories.Remove(category);
+        await _context.SaveChangesAsync();
+
+        return Ok("Категорію успішно видалено");
+    }
+
+    private bool CategoryExists(int id)
+    {
+        return _context.Categories.Any(e => e.Id == id);
     }
 }

@@ -27,3 +27,30 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const showFormButton = document.getElementById('show-create-genre-form');
+    const genreForm = document.querySelector('.create-genre-form');
+
+    showFormButton.addEventListener('click', function () {
+        if (genreForm.style.display === 'none') {
+            genreForm.style.display = 'block';
+        } else {
+            genreForm.style.display = 'none';
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const showFormButton = document.getElementById('show-create-language-form');
+    const languageForm = document.querySelector('.create-language-form');
+
+    showFormButton.addEventListener('click', function () {
+        if (languageForm.style.display === 'none') {
+            languageForm.style.display = 'block';
+        } else {
+            languageForm.style.display = 'none';
+        }
+    });
+});
+
+

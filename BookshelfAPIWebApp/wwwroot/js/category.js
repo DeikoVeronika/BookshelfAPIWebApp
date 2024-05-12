@@ -20,9 +20,17 @@ function addCategory() {
     const addNameTextbox = document.getElementById('add-name-category');
     const addDescriptionTextbox = document.getElementById('add-description-category');
 
+    const categoryName = addNameTextbox.value.trim();
+    const categoryDescription = addDescriptionTextbox.value.trim();
+
+    if (!categoryName) {
+        showError('Введіть назву категорії');
+        return;
+    }
+
     const category = {
-        name: addNameTextbox.value.trim(),
-        description: addDescriptionTextbox.value.trim(),
+        name: categoryName,
+        description: categoryDescription,
     };
 
     fetch(uri, {
@@ -36,7 +44,7 @@ function addCategory() {
         .then(response => {
             if (!response.ok) {
                 return response.text().then(errorText => {
-                    throw new Error(`Неможливо створити категорію. Категорія з такою назвою вже існує.`);
+                    throw new Error(errorText); 
                 });
             }
             return response.json();
@@ -47,10 +55,12 @@ function addCategory() {
             addDescriptionTextbox.value = '';
         })
         .catch(error => {
-            showError(error.message);
+            showError(error.message); 
             console.error('Неможливо створити категорію.', error);
         });
 }
+
+
 function deleteCategory(id) {
     fetch(`${uri}/${id}`, {
         method: 'DELETE'
@@ -81,17 +91,21 @@ function displayEditForm(id) {
 
 
 
-
 function updateCategory() {
-    const categoryId = document.getElementById('edit-id-category').value; 
+    const categoryId = document.getElementById('edit-id-category').value;
     const categoryName = document.getElementById('edit-name-category').value.trim();
-    const categoryDescription = document.getElementById('edit-desctiption-category').value.trim(); 
+    const categoryDescription = document.getElementById('edit-desctiption-category').value.trim();
 
     const category = {
         id: parseInt(categoryId, 10),
         name: categoryName,
         description: categoryDescription
     };
+
+    if (!categoryName) {
+        showError('Введіть назву категорії');
+        return;
+    }
 
     fetch(`${uri}/${categoryId}`, {
         method: 'PUT',
@@ -103,13 +117,15 @@ function updateCategory() {
     })
         .then(response => {
             if (!response.ok) {
-                throw new Error('Неможливо оновити категорію. Категорія з такою назвою вже існує.');
+                return response.text().then(errorText => {
+                    throw new Error(errorText);
+                });
             }
             getCategories();
             closeInput();
         })
         .catch(error => {
-            showError(error.message);
+            showError(error.message); 
             console.error('Неможливо оновити категорію.', error);
         });
 

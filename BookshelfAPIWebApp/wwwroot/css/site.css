@@ -201,7 +201,7 @@ header {
     margin: 60px;
 }
 
-.content-container-category, .content-container-author {
+.content-container-category, .content-container-author, .content-container-genre, .content-container-language {
     margin-top: 60px;
 }
 /*end content*/
@@ -235,12 +235,15 @@ header {
     display: flex;
     gap: 30px;
 }
-/*start create and edit form*/
-.create-form-category, 
-.edit-form-category, 
-.create-form-author, 
-.edit-form-author {
-
+/*start create and edit forms*/
+.create-form-category,
+.edit-form-category,
+.create-form-author,
+.edit-form-author,
+.create-form-genre,
+.edit-form-genre,
+.create-form-language,
+.edit-form-language {
     text-align: center;
     margin-top: 15px;
     padding: 0 50px 30px 50px;
@@ -249,9 +252,7 @@ header {
     width: 80%;
 }
 
-
-
-/*end create and edit form*/
+/*end create and edit forms*/
 
 /*start table*/
 .table {
@@ -313,13 +314,13 @@ tr:hover td {
 }
 
 /*end table*/
-.create-form-author {
+.create-form-author, .create-form-genre, .create-form-category, .create-form-language {
     float: left;
     display: grid;
     grid-template-columns: 1fr;
     grid-gap: 10px;
 }
 
-    .create-form-author input {
+    .create-form-author input, .create-form-genre input, .create-form-category input, .create-form-language input {
         margin-bottom: 15px;
     }
