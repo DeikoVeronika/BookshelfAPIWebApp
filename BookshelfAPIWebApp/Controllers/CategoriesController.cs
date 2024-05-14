@@ -55,7 +55,7 @@ public class CategoriesController : ControllerBase
     {
         if (id != category.Id)
         {
-            return BadRequest($"Категорію з Id {id} не знайдено.");
+            return BadRequest($"Id {id}, переданий в URL, не співпадає з ідентифікатором категорії.");
         }
 
         var existingCategory = await _context.Categories.FindAsync(id);
@@ -76,7 +76,6 @@ public class CategoriesController : ControllerBase
 
         try
         {
-            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
             _context.Entry(existingCategory).CurrentValues.SetValues(category);
             await _context.SaveChangesAsync();
         }

@@ -24,7 +24,9 @@ public class AuthorsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Author>>> GetAuthors()
     {
-        var authors = await _context.Authors.OrderBy(author => author.Name).ToListAsync();
+        var authors = await _context.Authors.OrderBy(author => author.Name)
+                                             .Include(author => author.Books)
+                                             .ToListAsync();
 
         if (authors.Count == 0)
         {
@@ -37,11 +39,15 @@ public class AuthorsController : ControllerBase
             Name = author.Name,
             Description = author.Description,
             Birthday = author.Birthday != null ? author.Birthday.ToString() : "",
-            Books = author.Books
+            Books = author.Books.Select(book => new
+            {
+                Title = book.Title,
+            })
         });
 
         return Ok(result);
     }
+
 
     // GET: api/Authors/5
     [HttpGet("{id}")]
@@ -74,7 +80,7 @@ public class AuthorsController : ControllerBase
     {
         if (id != author.Id)
         {
-            return BadRequest($"Автор з Id {id} не знайдений.");
+            return BadRequest($"Id {id}, переданий в URL, не співпадає з ідентифікатором автора.");
         }
 
         var existingAuthor = await _context.Authors.FindAsync(id);
@@ -100,7 +106,6 @@ public class AuthorsController : ControllerBase
 
         try
         {
-            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
             _context.Entry(existingAuthor).CurrentValues.SetValues(author);
             await _context.SaveChangesAsync();
         }

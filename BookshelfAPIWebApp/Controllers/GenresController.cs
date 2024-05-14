@@ -24,7 +24,7 @@ public class GenresController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Genre>>> GetGenres()
     {
-        var genres = await _context.Genres.ToListAsync();
+        var genres = await _context.Genres.OrderBy(genre => genre.Name).ToListAsync();
 
         if (genres.Count == 0)
         {
@@ -56,7 +56,7 @@ public class GenresController : ControllerBase
     {
         if (id != genre.Id)
         {
-            return BadRequest($"Жанр з Id {id} не знайдено.");
+            return BadRequest($"Id {id}, переданий в URL, не співпадає з ідентифікатором жанру.");
         }
 
         var existingGenre = await _context.Genres.FindAsync(id);
@@ -72,7 +72,6 @@ public class GenresController : ControllerBase
 
         try
         {
-            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
             _context.Entry(existingGenre).CurrentValues.SetValues(genre);
             await _context.SaveChangesAsync();
         }

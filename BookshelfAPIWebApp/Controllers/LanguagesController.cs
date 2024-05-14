@@ -24,7 +24,7 @@ public class LanguagesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Language>>> GetLanguages()
     {
-        var languages = await _context.Languages.ToListAsync();
+        var languages = await _context.Languages.OrderBy(language => language.Name).ToListAsync();
 
         if (languages.Count == 0)
         {
@@ -56,7 +56,7 @@ public class LanguagesController : ControllerBase
     {
         if (id != language.Id)
         {
-            return BadRequest($"Мову з Id {id} не знайдено.");
+            return BadRequest($"Id {id}, переданий в URL, не співпадає з ідентифікатором мови.");
         }
 
         var existingLanguage = await _context.Languages.FindAsync(id);
@@ -72,7 +72,6 @@ public class LanguagesController : ControllerBase
 
         try
         {
-            // Оновлення властивостей об'єкта, якщо він уже відстежується в контексті
             _context.Entry(existingLanguage).CurrentValues.SetValues(language);
             await _context.SaveChangesAsync();
         }

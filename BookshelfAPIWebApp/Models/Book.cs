@@ -4,8 +4,6 @@ namespace BookshelfAPIWebApp.Models;
 
 public class Book
 {
-
-
     public int Id { get; set; }
     [Display(Name = "Назва")]
     public string Title { get; set; }

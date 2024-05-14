@@ -1,15 +1,20 @@
 using BookshelfAPIWebApp.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
 
-builder.Services.AddDbContext<BookshelfAPIContext>(option => option.UseSqlServer(
-    builder.Configuration.GetConnectionString("DefaultConnection")
-    ));
-builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<BookshelfAPIContext>(options => options.UseSqlServer(
+    builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+});
 
 var app = builder.Build();
 
@@ -29,13 +34,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthorization();
+
+app.MapRazorPages();
+
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
 });
-
-app.UseAuthorization();
-
-app.MapRazorPages();
 
 app.Run();
